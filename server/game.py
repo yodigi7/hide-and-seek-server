@@ -8,7 +8,7 @@ VISION_DISTANCE = 2
 class Game:
     def __init__(self):
         self.hider_coords = (0, 0)
-        self.seeker_coords = (0, 3)
+        self.seeker_coords = (29, 29)
         self.seeker_move = []
         self.hider_move = []
         self.current_game_step = 0
