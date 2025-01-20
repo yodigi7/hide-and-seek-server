@@ -29,6 +29,7 @@ class GridUpdateMessage(BaseModel):
     """Status update sent to the client after a game step"""
 
     grid: List[List[int]]
+    seeker_can_see: bool
 
 
 class UpdateMoveRequest(BaseModel):

@@ -52,7 +52,7 @@ class Game:
         return board
 
     def get_board_seeker(self):
-        if self._seeker_can_see():
+        if self.seeker_can_see():
             return self.get_board()
         board = [
             [
@@ -73,7 +73,7 @@ class Game:
     def _hider_can_move(self):
         return self.current_game_step % 2
 
-    def _seeker_can_see(self):
+    def seeker_can_see(self):
         """
         Check the current game step to see if the seeker can see the whole board or not
         Returns:

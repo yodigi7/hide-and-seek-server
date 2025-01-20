@@ -66,10 +66,11 @@ async def game_loop():
             game.game_step()
             hider_board = game.get_board()
             seeker_board = game.get_board_seeker()
+            seeker_can_see = game.seeker_can_see()
             if game.is_over():
                 await asyncio.gather(
-                    update_hider(GridUpdateMessage(grid=hider_board).model_dump_json()),
-                    update_seeker(GridUpdateMessage(grid=seeker_board).model_dump_json()),
+                    update_hider(GridUpdateMessage(grid=hider_board, seeker_can_see=seeker_can_see).model_dump_json()),
+                    update_seeker(GridUpdateMessage(grid=seeker_board, seeker_can_see=seeker_can_see).model_dump_json()),
                 )
                 print(f"Game over in {game.current_game_step} steps")
                 game_over_payload = GameOverMessage(
@@ -81,8 +82,8 @@ async def game_loop():
                 break
             await asyncio.gather(
                 asyncio.sleep(0.5),
-                update_hider(GridUpdateMessage(grid=hider_board).model_dump_json()),
-                update_seeker(GridUpdateMessage(grid=seeker_board).model_dump_json()),
+                update_hider(GridUpdateMessage(grid=hider_board, seeker_can_see=seeker_can_see).model_dump_json()),
+                update_seeker(GridUpdateMessage(grid=seeker_board, seeker_can_see=seeker_can_see).model_dump_json()),
             )
         await reset()
         background_game_loop = None
@@ -138,10 +139,10 @@ async def get_position(websocket):
         role = JoinGameRequest.model_validate_json(message).role
         if role == Role.HIDER and hider_found:
             await websocket.send(SuccessFailMessage(status=Status.FAIL).model_dump_json())
-            websocket.close(1000)
+            await websocket.close(1000)
         elif role == Role.SEEKER and seeker_found:
             await websocket.send(SuccessFailMessage(status=Status.FAIL).model_dump_json())
-            websocket.close(1000)
+            await websocket.close(1000)
         elif role == Role.SEEKER:
             seeker_found = True
             seeker_connection = websocket
